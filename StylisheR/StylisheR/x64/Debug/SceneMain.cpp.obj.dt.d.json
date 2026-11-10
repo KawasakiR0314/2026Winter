@@ -1,10 +1,10 @@
 {
     "Version": "1.2",
     "Data": {
-        "Source": "c:\\users\\kawasaki ryunosuke\\source\\repos\\stylisher\\stylisher\\scenemain.cpp",
+        "Source": "c:\\users\\kawasaki ryunosuke\\documents\\github\\2026winter\\stylisher\\stylisher\\scenemain.cpp",
         "ProvidedModule": "",
         "Includes": [
-            "c:\\users\\kawasaki ryunosuke\\source\\repos\\stylisher\\stylisher\\scenemain.h",
+            "c:\\users\\kawasaki ryunosuke\\documents\\github\\2026winter\\stylisher\\stylisher\\scenemain.h",
             "c:\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxlib.h",
             "c:\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxcompileconfig.h",
             "c:\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxdatatype.h",
@@ -261,10 +261,11 @@
             "c:\\program files (x86)\\windows kits\\10\\include\\10.0.26100.0\\shared\\poppack.h",
             "c:\\program files (x86)\\windows kits\\10\\include\\10.0.26100.0\\um\\dpa_dsa.h",
             "c:\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxfunctionwin.h",
-            "c:\\users\\kawasaki ryunosuke\\source\\repos\\stylisher\\stylisher\\mouse.h",
-            "c:\\users\\kawasaki ryunosuke\\source\\repos\\stylisher\\stylisher\\player.h",
-            "c:\\users\\kawasaki ryunosuke\\source\\repos\\stylisher\\stylisher\\character.h",
-            "c:\\users\\kawasaki ryunosuke\\source\\repos\\stylisher\\stylisher\\enemy.h"
+            "c:\\users\\kawasaki ryunosuke\\documents\\github\\2026winter\\stylisher\\stylisher\\mouse.h",
+            "c:\\users\\kawasaki ryunosuke\\documents\\github\\2026winter\\stylisher\\stylisher\\pad.h",
+            "c:\\users\\kawasaki ryunosuke\\documents\\github\\2026winter\\stylisher\\stylisher\\player.h",
+            "c:\\users\\kawasaki ryunosuke\\documents\\github\\2026winter\\stylisher\\stylisher\\character.h",
+            "c:\\users\\kawasaki ryunosuke\\documents\\github\\2026winter\\stylisher\\stylisher\\enemy.h"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []

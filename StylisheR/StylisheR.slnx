@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="StylisheR/StylisheR.vcxproj" />
+  <Project Path="StylisheR/StylisheR.vcxproj" Id="c415b4a3-468e-4658-ac25-ecbdccc2e193" />
 </Solution>
