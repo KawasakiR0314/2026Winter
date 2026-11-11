@@ -1,4 +1,5 @@
 #pragma once
+#include "Vec2.h"
 
 /// <summary>
 /// プレイヤー、敵の基底クラス
@@ -53,5 +54,35 @@ protected:
 	/// 画像ハンドルを持つメンバ変数
 	/// </summary>
 	int m_handle;
+
+	/// <summary>
+	/// 画像ハンドルの横幅
+	/// </summary>
+	int m_width;
+
+	/// <summary>
+	/// 画像ハンドルの縦幅
+	/// </summary>
+	int m_height;
+
+	/// <summary>
+	/// 座標情報
+	/// </summary>
+	Vec2 m_pos;
+
+	/// <summary>
+	/// 移動量
+	/// </summary>
+	Vec2 m_move;
+
+	/// <summary>
+	/// プレイヤーが右を向いているか
+	/// </summary>
+	bool m_isRight;
+
+	/// <summary>
+	/// 地面についているかどうか
+	/// </summary>
+	bool m_isGround;
 };
 

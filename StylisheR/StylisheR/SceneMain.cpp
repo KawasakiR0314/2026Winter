@@ -38,7 +38,8 @@ void SceneMain::Draw()
 {
 	DrawString(0, 0, "SceneMain", GetColor(255, 255, 255));
 	DrawFormatString(0, 16, GetColor(255, 255, 255), "FRAME:%d", m_frameCount);
-	DrawFormatString(0, 32, GetColor(255, 255, 255), "MOUSE:(%5d,%5d)", Mouse::GetX(), Mouse::GetY());;
+	DrawFormatString(0, 32, GetColor(255, 255, 255), "PLAYER:(%d,%d)", m_pPlayer->GetX(), m_pPlayer->GetY());
+	DrawLine(0, 700, 1280, 700, GetColor(255, 255, 255));
 	m_pPlayer->Draw();
 	m_pEnemy->Draw();
 }
