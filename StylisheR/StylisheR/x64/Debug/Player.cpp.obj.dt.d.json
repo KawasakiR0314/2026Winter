@@ -1,12 +1,12 @@
 {
     "Version": "1.2",
     "Data": {
-        "Source": "c:\\users\\kawasaki ryunosuke\\desktop\\stylisher\\stylisher\\player.cpp",
+        "Source": "c:\\users\\kawasaki ryunosuke\\documents\\github\\2026winter\\stylisher\\stylisher\\player.cpp",
         "ProvidedModule": "",
         "Includes": [
-            "c:\\users\\kawasaki ryunosuke\\desktop\\stylisher\\stylisher\\player.h",
-            "c:\\users\\kawasaki ryunosuke\\desktop\\stylisher\\stylisher\\character.h",
-            "c:\\users\\kawasaki ryunosuke\\desktop\\stylisher\\stylisher\\vec2.h",
+            "c:\\users\\kawasaki ryunosuke\\documents\\github\\2026winter\\stylisher\\stylisher\\player.h",
+            "c:\\users\\kawasaki ryunosuke\\documents\\github\\2026winter\\stylisher\\stylisher\\character.h",
+            "c:\\users\\kawasaki ryunosuke\\documents\\github\\2026winter\\stylisher\\stylisher\\vec2.h",
             "c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.51.36231\\include\\cmath",
             "c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.51.36231\\include\\yvals.h",
             "c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.51.36231\\include\\yvals_core.h",
@@ -40,7 +40,7 @@
             "c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.51.36231\\include\\stdint.h",
             "c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.51.36231\\include\\cassert",
             "c:\\program files (x86)\\windows kits\\10\\include\\10.0.26100.0\\ucrt\\assert.h",
-            "c:\\users\\kawasaki ryunosuke\\desktop\\stylisher\\stylisher\\pad.h",
+            "c:\\users\\kawasaki ryunosuke\\documents\\github\\2026winter\\stylisher\\stylisher\\pad.h",
             "c:\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxlib.h",
             "c:\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxcompileconfig.h",
             "c:\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxdatatype.h",
