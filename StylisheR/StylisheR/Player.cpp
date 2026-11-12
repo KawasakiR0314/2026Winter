@@ -11,9 +11,14 @@ namespace
 	constexpr float kAccel = 0.2f; // 入力中の1フレームの加速度
 	constexpr float kFriction = 0.25f; // 非入力時の減速量
 	constexpr float kBrake = 0.5f; // 逆向きに入力したときのブレーキ量
-	constexpr float kJumpPower = 25.0f; // ジャンプ力
+	constexpr float kJumpPower = 20.0f; // ジャンプ力
 	constexpr float kJumpCutSpeed = 6.0f; // 離した時の上昇速度の上限
 	constexpr float kJumpSpeedBonus = 0.6f; // ダッシュ中のジャンプ力上乗せ
+	constexpr int kJumpMaxCombo = 3; // ジャンプの最大連続回数
+	constexpr float kJumpMaxPower = 22.5f; // 三段ジャンプ(二回目)のジャンプ力
+	constexpr float kJumpMiddlePower = 25.0f; // 三段ジャンプ(三回目)のジャンプ力
+	constexpr float kJumpPower[kJumpMaxCombo] =
+	{ kJumpPower, kJumpMiddlePower, kJumpMaxPower }; // 三段ジャンプの威力
 	constexpr float kAirFriction = 0.0f; // 空中での非入力時の減速量
 	constexpr float kAirAccel = 0.1f; // 空中での入力時の加速度
 	constexpr float kAirBrake = 0.25f; // 空中での逆方向入力時のブレーキ量
