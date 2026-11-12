@@ -1,4 +1,4 @@
-#include "Player.h"
+﻿#include "Player.h"
 #include "Pad.h"
 #include <DxLib.h>
 #include <cmath>
@@ -13,8 +13,10 @@ namespace
 	constexpr float kBrake = 0.5f; // 逆向きに入力したときのブレーキ量
 	constexpr float kJumpPower = 25.0f; // ジャンプ力
 	constexpr float kJumpCutSpeed = 6.0f; // 離した時の上昇速度の上限
-	constexpr float kJumpSpeedBonus = 6.0f; // ダッシュ中のジャンプ力上乗せ
-	constexpr float kAirFriction = 6.0f; // 空中での非入力時の減速量
+	constexpr float kJumpSpeedBonus = 0.6f; // ダッシュ中のジャンプ力上乗せ
+	constexpr float kAirFriction = 0.0f; // 空中での非入力時の減速量
+	constexpr float kAirAccel = 0.1f; // 空中での入力時の加速度
+	constexpr float kAirBrake = 0.25f; // 空中での逆方向入力時のブレーキ量
 	constexpr int kJumpBufferFrame = 6; // 先行入力の受付フレーム
 
 	/// <summary>
@@ -128,8 +130,8 @@ void Player::Move()
 		m_isRight = true;
 	}
 
-	// 入力時の加減速 ここで減速かブレーキかを判断
-	float step = kAccel;
+	// 入力の種類に応じて、地面と空中で値を切り替える
+	float step = 0.0f;
 	if (targetSpeed == 0.0f)
 	{
 		// 非入力時の減速量を切り替える(地面接触時/空中滞在時)
@@ -137,7 +139,13 @@ void Player::Move()
 	}
 	else if (m_move.x * targetSpeed < 0.0f)
 	{
-		step = kBrake;
+		// 逆方向に入力したときのブレーキ量を切り替える(地面接触時/空中滞在時)
+		step = m_isGround ? kBrake : kAirBrake;
+	}
+	else
+	{
+		// 進行方向に入力したときの加速度を切り替える(地面接触時/空中滞在時)
+		step = m_isGround ? kAccel : kAirAccel;
 	}
 	m_move.x = Approach(m_move.x, targetSpeed, step);
 }
@@ -157,7 +165,7 @@ void Player::Jump()
 		if (m_jumpBufferCount>0)
 		{
 			float jumpPower = kJumpPower+std::abs(m_move.x) * kJumpSpeedBonus;
-			m_move.y = -kJumpPower;
+			m_move.y = -jumpPower;
 			m_isGround = false;
 			m_jumpBufferCount = 0; // ジャンプ入力を消費する
 		}

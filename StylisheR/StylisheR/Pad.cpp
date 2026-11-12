@@ -1,4 +1,4 @@
-#include "Pad.h"
+﻿#include "Pad.h"
 #include <DxLib.h>
 
 namespace

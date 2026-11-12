@@ -1,7 +1,7 @@
 {
     "Version": "1.2",
     "Data": {
-        "Source": "c:\\users\\kawasaki ryunosuke\\desktop\\stylisher\\stylisher\\mouse.cpp",
+        "Source": "c:\\users\\kawasaki ryunosuke\\documents\\github\\2026winter\\stylisher\\stylisher\\mouse.cpp",
         "ProvidedModule": "",
         "Includes": [
             "c:\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxlib.h",
@@ -260,7 +260,7 @@
             "c:\\program files (x86)\\windows kits\\10\\include\\10.0.26100.0\\shared\\poppack.h",
             "c:\\program files (x86)\\windows kits\\10\\include\\10.0.26100.0\\um\\dpa_dsa.h",
             "c:\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxfunctionwin.h",
-            "c:\\users\\kawasaki ryunosuke\\desktop\\stylisher\\stylisher\\mouse.h"
+            "c:\\users\\kawasaki ryunosuke\\documents\\github\\2026winter\\stylisher\\stylisher\\mouse.h"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []
