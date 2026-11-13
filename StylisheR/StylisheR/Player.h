@@ -54,6 +54,16 @@ private:
 	/// </summary>
 	int m_jumpBufferCount;
 
+	/// <summary>
+	/// 次に跳ぶジャンプの段数(0~2)
+	/// </summary>
+	int m_jumpStage;
+
+	/// <summary>
+	/// 連続ジャンプの受付残りフレーム数
+	/// </summary>
+	int m_jumpComboRemainCount;
+
 public:
 	/// <summary>
 	/// プレイヤーのX座標の取得

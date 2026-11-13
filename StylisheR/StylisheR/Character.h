@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include "Vec2.h"
 
+class Map;
+class Rect;
+
 /// <summary>
 /// プレイヤー、敵の基底クラス
 /// </summary>
@@ -43,6 +46,8 @@ public:
 	/// </summary>
 	virtual void Update()abstract;
 
+	void SetMap(Map* map) { m_pMap = map; }
+
 protected:
 
 	/// <summary>
@@ -84,5 +89,13 @@ protected:
 	/// 地面についているかどうか
 	/// </summary>
 	bool m_isGround;
+
+	/// <summary>
+	/// 位置の更新とマップとの当たり判定
+	/// </summary>
+	void CheckHitMap();
+
+	Rect m_colRect; // 当たり判定用の矩形
+	Map* m_pMap; // マップのポインタ
 };
 

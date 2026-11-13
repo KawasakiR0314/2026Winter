@@ -5,20 +5,19 @@
 
 namespace
 {
-	constexpr int kGroundY = 700; // 地面のY座標
+	constexpr float kPlayerWidth = 32.0f; // プレイヤーの横幅
+	constexpr float kPlayerHeight = 64.0f; // プレイヤーの縦幅
 	constexpr float kMoveSpeed = 2.5f; // 通常移動速度
 	constexpr float kDashSpeed = 5.0f; // ダッシュ速度
 	constexpr float kAccel = 0.2f; // 入力中の1フレームの加速度
 	constexpr float kFriction = 0.25f; // 非入力時の減速量
 	constexpr float kBrake = 0.5f; // 逆向きに入力したときのブレーキ量
-	constexpr float kJumpPower = 20.0f; // ジャンプ力
 	constexpr float kJumpCutSpeed = 6.0f; // 離した時の上昇速度の上限
 	constexpr float kJumpSpeedBonus = 0.6f; // ダッシュ中のジャンプ力上乗せ
-	constexpr int kJumpMaxCombo = 3; // ジャンプの最大連続回数
-	constexpr float kJumpMaxPower = 22.5f; // 三段ジャンプ(二回目)のジャンプ力
-	constexpr float kJumpMiddlePower = 25.0f; // 三段ジャンプ(三回目)のジャンプ力
-	constexpr float kJumpPower[kJumpMaxCombo] =
-	{ kJumpPower, kJumpMiddlePower, kJumpMaxPower }; // 三段ジャンプの威力
+	constexpr int kJumpMaxStage = 3; // ジャンプの最大連続回数
+	constexpr float kJumpPower[kJumpMaxStage] =
+	{ 20.0f, 22.5f, 500.0f }; // 三段ジャンプの威力
+	constexpr int kComboFrame = 10; // 三段ジャンプの受付フレーム
 	constexpr float kAirFriction = 0.0f; // 空中での非入力時の減速量
 	constexpr float kAirAccel = 0.1f; // 空中での入力時の加速度
 	constexpr float kAirBrake = 0.25f; // 空中での逆方向入力時のブレーキ量
@@ -54,7 +53,9 @@ namespace
 }
 
 Player::Player():
-	m_jumpBufferCount(0)
+	m_jumpBufferCount(0),
+	m_jumpStage(0),
+	m_jumpComboRemainCount(0)
 {
 	// メンバ変数にプレイヤー画像を代入
 	Character::m_handle = LoadGraph("asset/image/player.png");
@@ -91,24 +92,58 @@ void Player::Draw()
 		DrawTurnGraph(static_cast<int>(m_pos.x), static_cast<int>(m_pos.y), m_handle, true);
 	}
 
+#ifdef _DEBUG
+	
+	if (m_isRight)
+	{
+		DrawBox(m_pos.x, m_pos.y, 
+			m_pos.x + kPlayerWidth,
+			m_pos.y + kPlayerHeight,
+			GetColor(255, 0, 0), false);
+	}
+	else
+	{
+		DrawBox(m_pos.x, m_pos.y, 
+			m_pos.x + kPlayerWidth,
+			m_pos.y + kPlayerHeight,
+			GetColor(0, 0, 255), false);
+	}
+
 	DrawFormatString(0, 48, GetColor(255, 255, 255), "JUMP BUFFER:%d", m_jumpBufferCount);
+	DrawFormatString(0, 64, GetColor(255, 255, 255), "NEXT JUMP:%d  INPUT FRAME:%d", m_jumpStage + 1, m_jumpComboRemainCount);
+#endif		
 }
 
 void Player::Update()
 {
-//	m_move.x = 0.0f;
 	Gravity();
 	Move();
 	Jump();
+	CheckHitMap(); // 位置の更新+マップとの当たり判定
 	m_pos += m_move;
 
+	m_colRect.SetCenter(m_pos.x, m_pos.y, kPlayerWidth, kPlayerHeight); // 当たり判定用の矩形を更新
+
 	// 地面との当たり判定
+	bool wasGround = m_isGround; // 1フレーム前の地面接触状態を保存
 	m_isGround = false;
-	if (m_pos.y+m_height >= kGroundY)
+
+	// n段ジャンプの受付処理
+	if (m_isGround && !wasGround)
 	{
-		m_pos.y = kGroundY - m_height;
-		m_move.y = 0.0f;
-		m_isGround = true;
+		// n段ジャンプの受付フレームをリセット
+		m_jumpComboRemainCount = kComboFrame; 
+	}
+
+	// 地面に接触している間は、n段ジャンプの受付フレームを減らし
+	// 連続ジャンプの段数をリセットする
+	if (m_isGround && m_jumpComboRemainCount > 0)
+	{
+		m_jumpComboRemainCount--;
+		if (m_jumpComboRemainCount == 0)
+		{
+			m_jumpStage = 0;
+		}
 	}
 }
 
@@ -169,10 +204,19 @@ void Player::Jump()
 		// ジャンプ入力が残っていたら実行する
 		if (m_jumpBufferCount>0)
 		{
-			float jumpPower = kJumpPower+std::abs(m_move.x) * kJumpSpeedBonus;
+			// n段ごとのジャンプ力+ダッシュ中のジャンプ力上乗せ
+			float jumpPower = kJumpPower[m_jumpStage] + std::abs(m_move.x) * kJumpSpeedBonus;
 			m_move.y = -jumpPower;
 			m_isGround = false;
 			m_jumpBufferCount = 0; // ジャンプ入力を消費する
+
+			// ジャンプ段数を増やす
+			m_jumpStage++;
+			// ジャンプ段数が3を超えたらリセット
+			if (m_jumpStage >= kJumpMaxStage)
+			{
+				m_jumpStage = 0;
+			}
 		}
 	}
 	else

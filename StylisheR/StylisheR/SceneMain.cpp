@@ -4,12 +4,15 @@
 #include "Pad.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Map.h"
 
 SceneMain::SceneMain():
 	m_frameCount(0) // 初期化子
 {
-	m_pPlayer = new Player;
-	m_pEnemy = new Enemy;
+	m_pPlayer = std::make_shared<Player>();
+	m_pEnemy = std::make_shared<Enemy>();
+	m_pMap = std::make_shared<Map>();
+	m_pMap->Load("assets/map/stage1.csv");
 }
 
 SceneMain::~SceneMain()
@@ -42,4 +45,5 @@ void SceneMain::Draw()
 	DrawLine(0, 700, 1280, 700, GetColor(255, 255, 255));
 	m_pPlayer->Draw();
 	m_pEnemy->Draw();
+	m_pMap->Draw();
 }
