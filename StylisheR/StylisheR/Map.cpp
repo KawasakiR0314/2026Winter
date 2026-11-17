@@ -6,54 +6,40 @@
 #include <string>
 #include <cmath>
 
-Map::Map()
+Map::Map():
+	m_chipHandle(-1),
+	m_chipNumX(1)
 {
-	// テスト用に手書き（0:空き 1:ブロック）。あとでPlatinumのデータに置き換える
-	m_tiles = {
-		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1 },
-		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	};
+	
 }
 
 Map::~Map()
 {
+	if (m_chipHandle != -1)
+	{
+		DeleteGraph(m_chipHandle); // マップ素材をメモリから解放
+	}
 }
 
 void Map::Draw()
 {
+	// 全てのマスを上から順に読んでいく
 	for (int row = 0; row < static_cast<int>(m_tiles.size()); row++)
 	{
+		// 行ごとに列の数を調べる
 		for (int col = 0; col < static_cast<int>(m_tiles[row].size()); col++)
 		{
-			if (m_tiles[row][col] == 0)continue; // 空きマスは描画しない
-			
-			int x = col * kTileSize;
-			int y = row * kTileSize;
-			if (m_tiles[row][col] == 1)
-			{
-				DrawBox(x, y, x + kTileSize, y + kTileSize, GetColor(180, 100, 40), true);
-				DrawBox(x, y, x + kTileSize, y + kTileSize, GetColor(90, 50, 20), false);
-			}
+			int tile = m_tiles[row][col];
+			if (tile < 0 || tile == kTileEmpty) continue;   // 空きマスは描かない
+
+			int x = col * kTileSize; // 画面に描画する位置(x)
+			int y = row * kTileSize; // 画面に描画する位置(y)
+
+			// マップ用のチップ画像のどこを切り出すか
+			int srcX = (tile % m_chipNumX) * kTileSize;
+			int srcY = (tile / m_chipNumX) * kTileSize;
+			DrawRectGraph(x, y, srcX, srcY, 
+				kTileSize, kTileSize, m_chipHandle, true);
 		}
 	}
 }
@@ -63,17 +49,18 @@ int Map::GetTile(int col, int row) const
 	// 範囲外は空きマスとして扱う(バグ防止)
 	if (row < 0 || row >= static_cast<int>(m_tiles.size()))
 	{
-		return 0;
+		return kTileEmpty;
 	}
-	if (col < 0 || col >= static_cast<int>(m_tiles[0].size()))
+	if (col < 0 || col >= static_cast<int>(m_tiles[row].size()))
 	{
-		return 0;
+		return kTileEmpty;
 	}
 	return m_tiles[row][col];
 }
 
 bool Map::Load(const char* path)
 {
+	// ファイル(path)を開く
 	std::ifstream file(path);
 	if (!file.is_open())
 	{
@@ -88,13 +75,15 @@ bool Map::Load(const char* path)
 		std::vector<int> row;
 		std::istringstream ss(line);
 		std::string cell;
-		while (std::getline(ss, cell, ',')) // カンマ区切り
+		// 一行の文字列をカンマで区切る
+		while (std::getline(ss, cell, ','))
 		{
-			row.push_back(cell.empty() ? 0 : std::stoi(cell)); // 文字列を整数に変換して入れる
+			// 文字列"1"を整数1に変換して、1行分に追加する
+			row.push_back(cell.empty() ? kTileEmpty : std::stoi(cell)); // 文字列を整数に変換して入れる
 		}
 		tiles.push_back(row);
 	}
-	m_tiles = tiles;
+	m_tiles = tiles; // 読み込んだデータを置き換える
 	return true;
 }
 
@@ -111,8 +100,9 @@ bool Map::IsCollision(const Rect& rect, Rect& chipRect) const
 	{
 		for (int col = colMin; col <= colMax; col++)
 		{
-			if (GetTile(col, row) == 0) continue; // 空きマスは当たり判定がない
+			if (!IsSolid(col, row)) continue; // 空きマスは当たり判定がない
 
+			// 調べるマスを矩形にして、矩形同士であったているかを調べる
 			Rect tileRect;
 			tileRect.SetLT(static_cast<float>(col * kTileSize),
 				static_cast<float>(row * kTileSize),
@@ -120,10 +110,28 @@ bool Map::IsCollision(const Rect& rect, Rect& chipRect) const
 				static_cast<float>(kTileSize));
 			if (rect.IsCollision(tileRect))
 			{
-				chipRect = tileRect; // 当たったマスの矩形を返す
+				// 当たったマスの矩形を、呼び出し元に渡す(押し戻しなどに使用)
+				chipRect = tileRect; 
 				return true;
 			}
 		}
 	}
 	return false;
+}
+
+bool Map::IsSolid(int col, int row) const
+{
+	// ブロックのチップ番号と同じなら壁
+	return GetTile(col, row) == kTileBlock;
+}
+
+bool Map::LoadChipImage(const char* path)
+{
+	m_chipHandle = LoadGraph(path);
+	if (m_chipHandle == -1)return false;
+
+	int w = 0, h = 0;
+	GetGraphSize(m_chipHandle, &w, &h);
+	m_chipNumX = w / kTileSize; // 横に何個並んでいるか
+	return true;
 }

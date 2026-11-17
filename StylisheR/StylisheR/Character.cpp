@@ -4,17 +4,18 @@
 
 namespace
 {
-	constexpr float kGravity = 1.0f; // 重力
+	constexpr float kGravity = 0.90f; // 重力
 }
 
-Character::Character():
+Character::Character() :
 	m_handle(-1),
 	m_width(0),
 	m_height(0),
-	m_pos(0.0f,0.0f),
-	m_move(0.0f,0.0f),
+	m_pos(0.0f, 0.0f),
+	m_move(0.0f, 0.0f),
 	m_isRight(true),
-	m_isGround(true)
+	m_isGround(true),
+	m_pMap(nullptr)
 {
 }
 
@@ -48,7 +49,7 @@ void Character::CheckHitMap()
 		{
 			m_pos.x = chipRect.GetRight(); // 壁の右側に止める
 		}
-		m_move.x;
+		m_move.x = 0.0f;
 	}
 
 	// 縦:動かして当たったら押し戻す
@@ -69,5 +70,7 @@ void Character::CheckHitMap()
 		}
 		m_move.y = 0.0f;
 	}
+
+	m_colRect.SetLT(m_pos.x, m_pos.y, w, h); // 当たり判定用の矩形を更新
 }
 

@@ -64,6 +64,11 @@ private:
 	/// </summary>
 	int m_jumpComboRemainCount;
 
+	/// <summary>
+	/// ダッシュ中かどうか
+	/// </summary>
+	bool m_isDash;
+
 public:
 	/// <summary>
 	/// プレイヤーのX座標の取得

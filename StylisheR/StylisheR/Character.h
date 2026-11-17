@@ -1,8 +1,8 @@
 ﻿#pragma once
 #include "Vec2.h"
+#include "Rect.h"
 
 class Map;
-class Rect;
 
 /// <summary>
 /// プレイヤー、敵の基底クラス

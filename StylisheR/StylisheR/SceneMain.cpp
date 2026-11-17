@@ -12,7 +12,17 @@ SceneMain::SceneMain():
 	m_pPlayer = std::make_shared<Player>();
 	m_pEnemy = std::make_shared<Enemy>();
 	m_pMap = std::make_shared<Map>();
-	m_pMap->Load("assets/map/stage1.csv");
+	m_pMap->Load("asset/map/TestMap.csv");
+	m_pPlayer->SetMap(m_pMap.get());
+
+	if (!m_pMap->LoadChipImage("asset/image/ground.png"))   // Platinumのチップ画像
+	{
+		printfDx("CHIP LOAD FAILED\n");
+	}
+	if (!m_pMap->Load("asset/map/Test.csv"))
+	{
+		printfDx("MAP LOAD FAILED\n");
+	}
 }
 
 SceneMain::~SceneMain()
@@ -39,11 +49,12 @@ void SceneMain::Update()
 
 void SceneMain::Draw()
 {
-	DrawString(0, 0, "SceneMain", GetColor(255, 255, 255));
-	DrawFormatString(0, 16, GetColor(255, 255, 255), "FRAME:%d", m_frameCount);
-	DrawFormatString(0, 32, GetColor(255, 255, 255), "PLAYER:(%d,%d)", m_pPlayer->GetX(), m_pPlayer->GetY());
-	DrawLine(0, 700, 1280, 700, GetColor(255, 255, 255));
+	m_pMap->Draw();
 	m_pPlayer->Draw();
 	m_pEnemy->Draw();
-	m_pMap->Draw();
+#ifdef _DEBUG
+	//DrawString(32, 0, "SceneMain", GetColor(255, 255, 255));
+	DrawFormatString(32, 32, GetColor(255, 255, 255), "FRAME:%d", m_frameCount);
+	DrawFormatString(32, 48, GetColor(255, 255, 255), "PLAYER:(%d,%d)", m_pPlayer->GetX(), m_pPlayer->GetY());
+#endif
 }
