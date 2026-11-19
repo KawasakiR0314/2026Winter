@@ -11,6 +11,7 @@ Character::Character() :
 	m_handle(-1),
 	m_width(0),
 	m_height(0),
+	m_colHeight(0.0f),
 	m_pos(0.0f, 0.0f),
 	m_move(0.0f, 0.0f),
 	m_isRight(true),
@@ -23,6 +24,11 @@ Character::~Character()
 {
 }
 
+Vec2 Character::GetCenter() const
+{
+	return Vec2(m_pos.x + m_width * 0.5f, m_pos.y + m_colHeight - m_height * 0.5f);
+}
+
 void Character::Gravity()
 {
 	m_move.y += kGravity;
@@ -32,7 +38,7 @@ void Character::CheckHitMap()
 {
 	Rect chipRect; // 当たったマスの矩形
 	float w = static_cast<float>(m_width);
-	float h = static_cast<float>(m_height);
+	float h = static_cast<float>(m_colHeight);
 
 	// マップとの当たり判定
 	// 横:動かして当たったら押し戻す

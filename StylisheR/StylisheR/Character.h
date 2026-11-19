@@ -39,14 +39,18 @@ public:
 	/// <summary>
 	/// 描画処理
 	/// </summary>
-	virtual void Draw()abstract;
+	virtual void Draw(const Vec2& offset)abstract;
 	
 	/// <summary>
 	/// 更新処理
 	/// </summary>
 	virtual void Update()abstract;
 
+	bool IsGround() const { return m_isGround; }
+
 	void SetMap(Map* map) { m_pMap = map; }
+
+	Vec2 GetCenter()const;
 
 protected:
 
@@ -69,6 +73,11 @@ protected:
 	/// 画像ハンドルの縦幅
 	/// </summary>
 	int m_height;
+
+	/// <summary>
+	/// しゃがみ時の縦幅
+	/// </summary>
+	float m_colHeight;
 
 	/// <summary>
 	/// 座標情報

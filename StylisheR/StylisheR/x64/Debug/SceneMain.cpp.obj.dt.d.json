@@ -349,7 +349,9 @@
             "c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.51.36231\\include\\vector",
             "c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.51.36231\\include\\__msvc_bit_utils.hpp",
             "c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.51.36231\\include\\__msvc_sanitizer_annotate_container.hpp",
-            "c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.51.36231\\include\\xpolymorphic_allocator.h"
+            "c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.51.36231\\include\\xpolymorphic_allocator.h",
+            "c:\\users\\kawasaki ryunosuke\\documents\\github\\2026winter\\stylisher\\stylisher\\camera.h",
+            "c:\\users\\kawasaki ryunosuke\\documents\\github\\2026winter\\stylisher\\stylisher\\game.h"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []

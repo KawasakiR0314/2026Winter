@@ -30,7 +30,7 @@ public:
 	/// <summary>
 	/// プレイヤー描画処理
 	/// </summary>
-	virtual void Draw()override;
+	virtual void Draw(const Vec2& offset)override;
 
 	/// <summary>
 	/// プレイヤー更新処理
@@ -48,6 +48,11 @@ private:
 	/// ジャンプ
 	/// </summary>
 	void Jump();
+
+	/// <summary>
+	/// しゃがみ
+	/// </summary>
+	void Crouch();
 
 	/// <summary>
 	/// ジャンプ先行入力の残りフレーム数
@@ -68,6 +73,21 @@ private:
 	/// ダッシュ中かどうか
 	/// </summary>
 	bool m_isDash;
+
+	/// <summary>
+	/// しゃがみ時、今の位置で立ち上がれるかどうか
+	/// </summary>
+	/// <returns></returns>
+	bool CanStandUp();
+
+	/// <summary>
+	/// しゃがんでいるか
+	/// </summary>
+	bool m_isCrouch;
+
+private:
+	// しゃがみ時のプレイヤーの画像ハンドル
+	int m_crouchHandle;
 
 public:
 	/// <summary>

@@ -30,7 +30,7 @@ public:
 	/// <summary>
 	/// エネミー描画処理
 	/// </summary>
-	virtual void Draw()override;
+	virtual void Draw(const Vec2& offset)override;
 
 	/// <summary>
 	/// エネミー更新処理

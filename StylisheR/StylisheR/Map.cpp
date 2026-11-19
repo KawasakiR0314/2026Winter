@@ -21,7 +21,7 @@ Map::~Map()
 	}
 }
 
-void Map::Draw()
+void Map::Draw(const Vec2& offset)
 {
 	// 全てのマスを上から順に読んでいく
 	for (int row = 0; row < static_cast<int>(m_tiles.size()); row++)
@@ -32,8 +32,8 @@ void Map::Draw()
 			int tile = m_tiles[row][col];
 			if (tile < 0 || tile == kTileEmpty) continue;   // 空きマスは描かない
 
-			int x = col * kTileSize; // 画面に描画する位置(x)
-			int y = row * kTileSize; // 画面に描画する位置(y)
+			int x = col * kTileSize - static_cast<int>(offset.x); // 画面に描画する位置(x)
+			int y = row * kTileSize - static_cast<int>(offset.y); // 画面に描画する位置(y)
 
 			// マップ用のチップ画像のどこを切り出すか
 			int srcX = (tile % m_chipNumX) * kTileSize;
@@ -134,4 +134,15 @@ bool Map::LoadChipImage(const char* path)
 	GetGraphSize(m_chipHandle, &w, &h);
 	m_chipNumX = w / kTileSize; // 横に何個並んでいるか
 	return true;
+}
+
+float Map::GetWidthPx() const
+{
+	if (m_tiles.empty())return 0.0f;
+	return static_cast<float>(m_tiles[0].size() * kTileSize);
+}
+
+float Map::GetHeightPx() const
+{
+	return static_cast<float>(m_tiles.size() * kTileSize);
 }

@@ -1,5 +1,6 @@
 ﻿#include "Player.h"
 #include "Pad.h"
+#include "Map.h"
 #include <DxLib.h>
 #include <cmath>
 
@@ -7,8 +8,10 @@ namespace
 {
 	constexpr float kPlayerWidth = 32.0f; // プレイヤーの横幅
 	constexpr float kPlayerHeight = 64.0f; // プレイヤーの縦幅
+	constexpr float kCrouchHeight = 32.0f; // しゃがみ時縦幅
 	constexpr float kMoveSpeed = 2.5f; // 通常移動速度
 	constexpr float kDashSpeed = 7.0f; // ダッシュ速度
+	constexpr float kCrouchSpeed = 0.0f; // ダッシュ速度
 	constexpr float kAccel = 0.2f; // 入力中の1フレームの加速度
 	constexpr float kFriction = 0.5f; // 非入力時の減速量
 	constexpr float kBrake = 0.5f; // 逆向きに入力したときのブレーキ量
@@ -56,15 +59,17 @@ Player::Player():
 	m_jumpBufferCount(0),
 	m_jumpStage(0),
 	m_jumpComboRemainCount(0),
-	m_isDash(false)
+	m_isDash(false),
+	m_isCrouch(false),
+	m_crouchHandle(-1)
 {
 	// メンバ変数にプレイヤー画像を代入
 	Character::m_handle = LoadGraph("asset/image/player.png");
-
+	m_crouchHandle = LoadGraph("asset/image/player_syagami.png");
 	// キャラクターの横幅と縦幅を取得
 	GetGraphSize(m_handle, &m_width, &m_height);
-
-	m_pos = Vec2(150.0f, 400.0f); // 初期位置
+	m_colHeight = static_cast<float>(m_height); // 立っている時の判定の高さ
+	m_pos = Vec2(240.0f, 900.0f); // 初期位置
 }
 
 Player::~Player()
@@ -81,31 +86,34 @@ void Player::End()
 {
 }
 
-void Player::Draw()
+void Player::Draw(const Vec2& offset)
 {
-	// float型の座標をint型にやって描画する
+	int x = static_cast<int>(m_pos.x - offset.x);
+	int y = static_cast<int>(m_pos.y - offset.y);
+
+	int handle = m_isCrouch ? m_crouchHandle : m_handle;
+	// float型の座標をint型にsite描画する
 	if (m_isRight)
 	{
-		DrawGraph(static_cast<int>(m_pos.x), static_cast<int>(m_pos.y), m_handle, true);
+		DrawGraph(x, y, handle, true);
 	}
 	else
 	{
-		DrawTurnGraph(static_cast<int>(m_pos.x), static_cast<int>(m_pos.y), m_handle, true);
+		DrawTurnGraph(x, y, handle, true);
 	}
 
 #ifdef _DEBUG
 	
-	m_colRect.Draw(m_isRight ? GetColor(255, 0, 0) : GetColor(0, 255, 0), false);
-
+	m_colRect.Draw(m_isRight ? GetColor(255, 0, 0) : GetColor(0, 255, 0), false, offset);
 	DrawFormatString(32, 64, GetColor(255, 255, 255), "JUMP BUFFER:%d", m_jumpBufferCount);
 	DrawFormatString(32, 80, GetColor(255, 255, 255), "NEXT JUMP:%d  INPUT FRAME:%d", m_jumpStage + 1, m_jumpComboRemainCount);
-	m_colRect.Draw(GetColor(255, 255, 0),false);
 #endif		
 }
 
 void Player::Update()
 {
 	Gravity();
+	Crouch();
 	Move();
 	Jump();
 
@@ -139,6 +147,12 @@ void Player::Move()
 	
 	// ダッシュで最高速度を切り替える
 	float maxSpeed = dashPress ? kDashSpeed : kMoveSpeed;
+
+	// しゃがみ中は移動不可
+	if (m_isCrouch)
+	{
+		maxSpeed = kCrouchSpeed;
+	}
 
 	// 入力から目標速度を決める
 	float targetSpeed = 0.0f;
@@ -192,16 +206,19 @@ void Player::Jump()
 		// ジャンプ入力が残っていたら実行する
 		if (m_jumpBufferCount>0)
 		{
+			// n段ジャンプの受付条件
+			bool canCombo = m_isDash && !m_isCrouch;
+
 			// ダッシュ中でなければ必ず一段目
 			int stage = m_isDash ? m_jumpStage : 0;
 
 			// n段ごとのジャンプ力+ダッシュ中のジャンプ力上乗せ
-			float jumpPower = kJumpPower[m_jumpStage] + std::abs(m_move.x) * kJumpSpeedBonus;
+			float jumpPower = kJumpPower[stage] + std::abs(m_move.x) * kJumpSpeedBonus;
 			m_move.y = -jumpPower;
 			m_isGround = false;
 			m_jumpBufferCount = 0; // ジャンプ入力を消費する
 
-			if (m_isDash)
+			if (canCombo)
 			{
 				// もしダッシュ中なら、ジャンプ段数を増やす
 				m_jumpStage++;
@@ -233,6 +250,45 @@ void Player::Jump()
 			m_jumpBufferCount--;
 		}
 	}
+}
+
+void Player::Crouch()
+{
+	bool downPress = Pad::IsPress(PAD_INPUT_DOWN);
+
+	if (!m_isCrouch)
+	{
+		// 地面についている、かつ下を押したらしゃがむ
+		if (m_isGround && downPress)
+		{
+			m_isCrouch = true;
+			// 足元の固定
+			m_pos.y += m_height - kCrouchHeight;
+			m_colHeight = kCrouchHeight;
+		}
+	}
+	else
+	{
+		// 下を離す、かつ立ち上がれる状態だったら立ち上がる
+		if (!downPress && CanStandUp())
+		{
+			m_isCrouch = false;
+			m_pos.y -= m_height - kCrouchHeight;
+			m_colHeight = static_cast<float>(m_height);
+		}
+	}
+}
+
+bool Player::CanStandUp()
+{
+	// 今の足元から、立った高さ分だけ上に伸ばした矩形の作成をする
+	float feetY = m_pos.y + m_colHeight;
+	Rect standRect;
+	standRect.SetLT(m_pos.x, feetY - m_height,
+		static_cast<float>(m_width), static_cast<float>(m_height));
+
+	Rect dummy; // 当たったマスの情報は使わない
+	return !m_pMap->IsCollision(standRect,dummy);
 }
 
 int Player::GetX()

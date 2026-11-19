@@ -14,9 +14,13 @@ Rect::~Rect()
 {
 }
 
-void Rect::Draw(unsigned int Color, bool isFill)
+void Rect::Draw(unsigned int Color, bool isFill, const Vec2& offset)
 {
-	DrawBox(static_cast<int>(m_left), static_cast<int>(m_top), static_cast<int>(m_right), static_cast<int>(m_bottom), Color, isFill);
+	DrawBox(static_cast<int>(m_left - offset.x),
+		static_cast<int>(m_top - offset.y),
+		static_cast<int>(m_right - offset.x),
+		static_cast<int>(m_bottom - offset.y),
+		Color, isFill);
 }
 
 void Rect::SetLT(float left, float top, float width, float height)

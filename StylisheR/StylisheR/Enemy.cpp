@@ -21,7 +21,7 @@ void Enemy::End()
 {
 }
 
-void Enemy::Draw()
+void Enemy::Draw(const Vec2& offset)
 {
 }
 

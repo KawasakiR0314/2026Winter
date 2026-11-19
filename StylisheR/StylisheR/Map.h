@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <vector>
+#include "Vec2.h"
 
 class Rect;
 
@@ -22,7 +23,7 @@ public:
 	/// <summary>
 	/// マップの描画
 	/// </summary>
-	void Draw();
+	void Draw(const Vec2& offset);
 
 	/// <summary>
 	/// 指定のタイル番号を取得
@@ -58,6 +59,18 @@ public:
 	/// <param name="path"></param>
 	/// <returns></returns>
 	bool LoadChipImage(const char* path);
+
+	/// <summary>
+	/// マップ全体の横幅の取得
+	/// </summary>
+	/// <returns>マップ全体の横幅</returns>
+	float GetWidthPx()const;
+
+	/// <summary>
+	/// マップ全体の縦幅を取得する
+	/// </summary>
+	/// <returns>マップ全体の縦幅</returns>
+	float GetHeightPx()const;
 
 	// マップチップ1マスの大きさ(ピクセル)
 	static constexpr int kTileSize = 32;

@@ -3,6 +3,7 @@
 class Player;
 class Enemy;
 class Map;
+class Camera;
 
 class SceneMain
 {
@@ -21,5 +22,6 @@ private:
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Enemy> m_pEnemy;
 	std::shared_ptr<Map> m_pMap;
+	std::shared_ptr<Camera> m_pCamera;
 };
 

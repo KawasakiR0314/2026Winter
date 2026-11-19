@@ -22,7 +22,7 @@ public:
 	/// </summary>
 	/// <param name="Color">矩形の色</param>
 	/// <param name="isFill">太さ</param>
-	void Draw(unsigned int Color, bool isFill);
+	void Draw(unsigned int Color, bool isFill,const Vec2& offset=Vec2(0.0f,0.0f));
 
 	/// <summary>
 	/// 左上座標と幅高さを指定
