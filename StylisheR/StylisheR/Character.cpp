@@ -34,6 +34,17 @@ void Character::Gravity()
 	m_move.y += kGravity;
 }
 
+bool Character::IsTouchingWall(int dir) const
+{
+	// 今の矩形をdirの向きに1pxずらした矩形を作成し、それをセンサーとする
+	Rect probe;
+	probe.SetLT(m_pos.x + dir * 1.0f, m_pos.y,
+		static_cast<float>(m_width), m_colHeight);
+
+	Rect dummy; // 当たったマスの情報は使わない
+	return m_pMap->IsCollision(probe,dummy);
+}
+
 void Character::CheckHitMap()
 {
 	Rect chipRect; // 当たったマスの矩形

@@ -85,6 +85,26 @@ private:
 	/// </summary>
 	bool m_isCrouch;
 
+	/// <summary>
+	/// 左右の入力方向(-1:左, 0:なし, 1:右)
+	/// </summary>
+	int m_inputDir;
+
+	/// <summary>
+	/// 蹴れる壁の向き
+	/// </summary>
+	int GetWallDir()const;
+
+	/// <summary>
+	/// 壁キック直後の入力を無視するフレーム数
+	/// </summary>
+	int m_wallKickLockCount;
+
+	/// <summary>
+	/// 壁に向かって入力している間のずり落ち
+	/// </summary>
+	void WallSlide();
+
 private:
 	// しゃがみ時のプレイヤーの画像ハンドル
 	int m_crouchHandle;

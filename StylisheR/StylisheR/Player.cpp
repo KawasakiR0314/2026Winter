@@ -20,11 +20,17 @@ namespace
 	constexpr int kJumpMaxStage = 3; // ジャンプの最大連続回数
 	constexpr float kJumpPower[kJumpMaxStage] =
 	{ 15.0f, 17.5f, 20.0f }; // 三段ジャンプの威力
+	constexpr float kCrouchJumpSpeed = 1.5f; // しゃがみジャンプの横方向初速
 	constexpr int kComboFrame = 10; // 三段ジャンプの受付フレーム
 	constexpr float kAirFriction = 0.0f; // 空中での非入力時の減速量
-	constexpr float kAirAccel = 0.1f; // 空中での入力時の加速度
+	constexpr float kAirAccel = 0.3f; // 空中での入力時の加速度
 	constexpr float kAirBrake = 0.25f; // 空中での逆方向入力時のブレーキ量
-	constexpr int kJumpBufferFrame = 6; // 先行入力の受付フレーム
+	constexpr int kJumpBufferFrame = 8; // 先行入力の受付フレーム
+	constexpr float kWallKickSpeedX = 5.0f; // 壁キック時の横速度
+	constexpr float kWallKickPowerY = 15.0f; // 壁キック時の上向きの威力
+	constexpr int kWallKickLockFrame = 12; // 壁キック後に入力を無視するフレーム
+	constexpr float kWallSlideSpeed = 4.0f; // ずり落ち中の、最大の落下速度
+	constexpr float kWallSlideBrake = 4.0f; // 落下速度を上限まで落とす量(1f)
 
 	/// <summary>
 	/// 次向かう場所に向かって現在値を少しずつ近づける
@@ -61,7 +67,9 @@ Player::Player():
 	m_jumpComboRemainCount(0),
 	m_isDash(false),
 	m_isCrouch(false),
-	m_crouchHandle(-1)
+	m_inputDir(0),
+	m_crouchHandle(-1),
+	m_wallKickLockCount(0)
 {
 	// メンバ変数にプレイヤー画像を代入
 	Character::m_handle = LoadGraph("asset/image/player.png");
@@ -76,6 +84,7 @@ Player::~Player()
 {
 	// 画像をメモリから解放
 	DeleteGraph(m_handle);
+	DeleteGraph(m_crouchHandle);
 }
 
 void Player::Init()
@@ -107,6 +116,7 @@ void Player::Draw(const Vec2& offset)
 	m_colRect.Draw(m_isRight ? GetColor(255, 0, 0) : GetColor(0, 255, 0), false, offset);
 	DrawFormatString(32, 64, GetColor(255, 255, 255), "JUMP BUFFER:%d", m_jumpBufferCount);
 	DrawFormatString(32, 80, GetColor(255, 255, 255), "NEXT JUMP:%d  INPUT FRAME:%d", m_jumpStage + 1, m_jumpComboRemainCount);
+	DrawFormatString(32, 112, GetColor(255, 255, 255), "m_inputDir:%d", m_inputDir);
 #endif		
 }
 
@@ -115,6 +125,7 @@ void Player::Update()
 	Gravity();
 	Crouch();
 	Move();
+	WallSlide(); 
 	Jump();
 
 	// 地面との当たり判定
@@ -142,16 +153,23 @@ void Player::Update()
 
 void Player::Move()
 {
+	//壁キック後は入力を無視して速度を保つ
+	if (m_wallKickLockCount > 0)
+	{
+		m_wallKickLockCount--;
+		m_inputDir = 0;
+		m_isDash = false;
+		return;
+	}
+
 	// ダッシュボタンが押されているか
 	bool dashPress = Pad::IsPress(PAD_INPUT_1);
 	
 	// ダッシュで最高速度を切り替える
 	float maxSpeed = dashPress ? kDashSpeed : kMoveSpeed;
-
-	// しゃがみ中は移動不可
 	if (m_isCrouch)
 	{
-		maxSpeed = kCrouchSpeed;
+		maxSpeed = m_isGround ? kCrouchSpeed : kMoveSpeed;
 	}
 
 	// 入力から目標速度を決める
@@ -161,11 +179,17 @@ void Player::Move()
 	{
 		targetSpeed -= maxSpeed;
 		m_isRight = false;
+		m_inputDir = -1;
 	}
-	if (Pad::IsPress(PAD_INPUT_RIGHT))
+	else if (Pad::IsPress(PAD_INPUT_RIGHT))
 	{
 		targetSpeed += maxSpeed;
 		m_isRight = true;
+		m_inputDir = 1;
+	}
+	else
+	{
+		m_inputDir = 0;
 	}
 
 	// ダッシュボタンを押している、
@@ -215,6 +239,10 @@ void Player::Jump()
 			// n段ごとのジャンプ力+ダッシュ中のジャンプ力上乗せ
 			float jumpPower = kJumpPower[stage] + std::abs(m_move.x) * kJumpSpeedBonus;
 			m_move.y = -jumpPower;
+			if (m_isCrouch && m_inputDir != 0)
+			{
+				m_move.x = m_inputDir * kCrouchJumpSpeed;
+			}
 			m_isGround = false;
 			m_jumpBufferCount = 0; // ジャンプ入力を消費する
 
@@ -238,6 +266,19 @@ void Player::Jump()
 	}
 	else
 	{
+		// 壁キック
+		int wallDir = GetWallDir();
+		if (wallDir != 0 && m_jumpBufferCount > 0 && !m_isCrouch)
+		{
+			m_move.x = -wallDir * kWallKickSpeedX; // 壁と反対向きに飛ぶ
+			m_move.y = -kWallKickPowerY;
+			m_isRight = (wallDir < 0); // 壁が左にあるなら右向き
+			m_wallKickLockCount = kWallKickLockFrame;
+			m_jumpBufferCount = 0; // ジャンプ入力の消費
+			m_jumpStage = 0; // n段ジャンプを途切れさせる
+			return;
+		}
+
 		// ジャンプボタンを離したら、上への力をなくす
 		if (Pad::IsRelease(PAD_INPUT_2) && m_move.y < -kJumpCutSpeed)
 		{
@@ -289,6 +330,30 @@ bool Player::CanStandUp()
 
 	Rect dummy; // 当たったマスの情報は使わない
 	return !m_pMap->IsCollision(standRect,dummy);
+}
+
+int Player::GetWallDir() const
+{
+	// 壁に向かって入力している時だけ、その側の画面を調べる
+	if (m_inputDir != 0 && IsTouchingWall(m_inputDir))
+	{
+		return m_inputDir;
+	}
+	return 0;
+}
+
+void Player::WallSlide()
+{
+	// 空中にいる状態かつ非しゃがみ状態
+	// 加えて壁に向かって入力している時
+	if (m_isGround || m_isCrouch)return;
+	if (GetWallDir() == 0)return;
+
+	// 落下速度が上限を超えていたら少しずつ上限まで落とす
+	if (m_move.y > kWallSlideSpeed)
+	{
+		m_move.y = Approach(m_move.y, kWallSlideSpeed, kWallSlideBrake);
+	}
 }
 
 int Player::GetX()

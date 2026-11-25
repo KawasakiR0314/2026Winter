@@ -90,7 +90,7 @@ protected:
 	Vec2 m_move;
 
 	/// <summary>
-	/// プレイヤーが右を向いているか
+	/// 右を向いているか
 	/// </summary>
 	bool m_isRight;
 
@@ -98,6 +98,13 @@ protected:
 	/// 地面についているかどうか
 	/// </summary>
 	bool m_isGround;
+
+	/// <summary>
+	/// 指定した壁の向きに触れているか
+	/// </summary>
+	/// <param name="dir">-1:左,1:右</param>
+	/// <returns></returns>
+	bool IsTouchingWall(int dir)const;
 
 	/// <summary>
 	/// 位置の更新とマップとの当たり判定
